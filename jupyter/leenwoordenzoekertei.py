@@ -103,7 +103,7 @@ class LoanWordStats:
 
   def find(self,arg):
       if (os.path.isfile(arg)):
-          findFromFile(arg)
+          self.findFromFile(arg)
       else:
         if (arg.startswith('http')):
           self.findFromURL(arg)
