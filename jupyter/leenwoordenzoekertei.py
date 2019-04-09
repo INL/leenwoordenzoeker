@@ -110,14 +110,20 @@ class LoanWordStats:
         else:
           self.findFromString(arg)
 
-  def findFromString(self,fileContents):
+
+  def findFromString(self, fileContent):
+      self.findFromStrings([fileContent])
+
+  def findFromStrings(self,fileContents):
       # Ensure proper usage.
   
       # Map all relevant data in loanword database.
- 
-      taggedXML = tagString(fileContents)
 
-      tree=etree.fromstring(taggedXML)
+
+      lem_pos = ''
+      for fileContent in fileContents:
+        taggedXML = tagString(fileContent)
+        tree=etree.fromstring(taggedXML)
 
       # Open text input file.
       
@@ -128,16 +134,17 @@ class LoanWordStats:
   
   
       # Also make pairs of words in text and their POS tag for easy comparison.
-      rows = []
+        rows = []
   
       #words = tree.xpath('.//fo:w', namespaces=ns)
       #lem_pos = ' '.join(['_'.join((w.find('fo:lemma[@class]',namespaces=ns).get('class','None'),
       #                    w.find('fo:pos[@head]',namespaces=ns).get('head','None'))) for w in words])
-  
-      words = tree.xpath('.//tei:w', namespaces=ns)
-      lem_pos = ' '.join(['_'.join((w.attrib.get('lemma','None'),
-                          re.sub('\(.*', '', w.attrib.get('type','None')))) for w in words])
-
+         
+        words_local = tree.xpath('.//tei:w', namespaces=ns)
+        print("parsed tagged file with " + str(len(words_local)) + " words ")
+        lem_pos_local = ' '.join(['_'.join((w.attrib.get('lemma','None'),
+                          re.sub('\(.*', '', w.attrib.get('type','None')))) for w in words_local])
+        lem_pos = lem_pos + ' ' + lem_pos_local
       # Make list of words with POS tags and list of words without POS tags.
       to_compare = []
       to_compare_2 = []
